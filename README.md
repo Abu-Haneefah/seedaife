@@ -49,13 +49,13 @@ Seed AI Academy is a modern, high-performance web platform built with **Next.js 
 
 ## Brand Palette
 
-| Token | Hex | Role |
-| :--- | :--- | :--- |
-| `--plum` | `#2A1450` | Primary dark background and body text on light surfaces |
-| `--lime` | `#B8F23C` | Primary accent, hero highlights, buttons, and 101 level |
-| `--lilac` | `#A98BFF` | Secondary accent, support graphics, and 102 level |
-| `--cream` | `#FFF8E7` | Contrast background sections and headline highlights |
-| `--coral` | `#FF6F61` | Accent highlight, alerts, and 103 level |
+| Token     | Hex       | Role                                                    |
+| :-------- | :-------- | :------------------------------------------------------ |
+| `--plum`  | `#2A1450` | Primary dark background and body text on light surfaces |
+| `--lime`  | `#B8F23C` | Primary accent, hero highlights, buttons, and 101 level |
+| `--lilac` | `#A98BFF` | Secondary accent, support graphics, and 102 level       |
+| `--cream` | `#FFF8E7` | Contrast background sections and headline highlights    |
+| `--coral` | `#FF6F61` | Accent highlight, alerts, and 103 level                 |
 
 ---
 
@@ -142,15 +142,6 @@ seedaife/
 ## Environment Variables
 
 Create a `.env.local` file in the root directory if you wish to override default contact details or connect backend services:
-
-```env
-NEXT_PUBLIC_SEEDAI_EMAIL="seedaiacademy@gmail.com"
-NEXT_PUBLIC_WHATSAPP_NUMBER="+2349069115484"
-NEXT_PUBLIC_INSTAGRAM_URL="https://www.instagram.com/seedaiacademy/"
-NEXT_PUBLIC_YOUTUBE_URL="https://www.youtube.com/channel/UCcVTAm_6sYBWbTMIBRf2akA"
-NEXT_PUBLIC_LINKEDIN_URL="https://www.linkedin.com/in/fatai-jabar-9309a4279/"
-NEXT_PUBLIC_SITE_URL="https://seedaiacademy.com"
-```
 
 ---
 
