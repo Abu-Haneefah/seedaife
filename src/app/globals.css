@@ -49,6 +49,7 @@ body{
   font-weight:400;
   color:var(--cream);
   background:var(--plum);
+  transition:background-color .6s ease, color .6s ease;
   overflow-x:hidden;
   -webkit-font-smoothing:antialiased;
   text-rendering:optimizeLegibility;
@@ -534,3 +535,481 @@ html.reduce-motion{scroll-behavior:auto}
   *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important}
 }
 @media print{.scene-layer,.glow-cursor,.grain,.wa-fab,.preloader{display:none !important}.section,.section-light{background:#fff;color:#000}}
+
+/* 29. TIME-OF-DAY MODES & ATMOSPHERE ------------------------------------ */
+body,
+.section,
+.section-light,
+.section-dark,
+.glass-card,
+.tile-card,
+.acc,
+.ladder-panel,
+.chat,
+.navbar,
+.footer,
+.cta-card,
+.cf-face,
+.hero,
+.shield-svg path {
+  transition: background-color 0.45s ease, background 0.45s ease, color 0.45s ease, border-color 0.45s ease, box-shadow 0.45s ease;
+}
+
+/* --- MORNING MODE: Warm Sunrise Dawn --- */
+:root[data-time-mode="morning"] {
+  --plum: #251346;
+  --plum-deep: #160a2c;
+  --plum-soft: #381b62;
+  --cream: #fffaf2;
+  --line-dark: rgba(255, 248, 235, 0.16);
+  --line-light: rgba(37, 19, 70, 0.14);
+  --glow-lime: 0 0 46px rgba(255, 185, 70, 0.42);
+}
+
+[data-time-mode="morning"] body {
+  background: var(--plum);
+  color: var(--cream);
+}
+
+[data-time-mode="morning"] .section-light {
+  background: #fffdf7 !important;
+}
+
+[data-time-mode="morning"] .hero {
+  background: radial-gradient(120% 90% at 12% 8%, rgba(255, 185, 70, 0.22), transparent 55%),
+              radial-gradient(80% 70% at 85% 15%, rgba(255, 115, 95, 0.12), transparent 60%),
+              radial-gradient(60% 60% at 50% 65%, rgba(255, 215, 120, 0.08), transparent 70%);
+}
+
+[data-time-mode="morning"] .glow-cursor {
+  background: radial-gradient(circle, rgba(255, 195, 75, 0.22), rgba(255, 120, 160, 0.1) 46%, transparent 72%);
+}
+
+[data-time-mode="morning"] .hero h1 .hl {
+  color: #ffd859;
+  text-shadow: 0 0 25px rgba(255, 216, 89, 0.35);
+}
+
+[data-time-mode="morning"] .navbar.is-scrolled {
+  background: rgba(37, 19, 70, 0.78);
+}
+
+/* --- AFTERNOON MODE: High-Energy Solar Day --- */
+:root[data-time-mode="afternoon"] {
+  --plum: #2a1450;
+  --plum-deep: #180a31;
+  --plum-soft: #3b1f6d;
+  --cream: #fff8e7;
+  --glow-lime: 0 0 48px rgba(184, 242, 60, 0.48);
+}
+
+[data-time-mode="afternoon"] body {
+  background: var(--plum);
+  color: var(--cream);
+}
+
+[data-time-mode="afternoon"] .section-light {
+  background: var(--cream) !important;
+}
+
+[data-time-mode="afternoon"] .hero {
+  background: radial-gradient(120% 90% at 15% 10%, rgba(184, 242, 60, 0.2), transparent 55%),
+              radial-gradient(70% 60% at 80% 20%, rgba(80, 220, 255, 0.14), transparent 60%);
+}
+
+[data-time-mode="afternoon"] .glow-cursor {
+  background: radial-gradient(circle, rgba(184, 242, 60, 0.22), rgba(80, 220, 255, 0.12) 46%, transparent 72%);
+}
+
+[data-time-mode="afternoon"] .hero h1 .hl {
+  color: var(--lime);
+  text-shadow: 0 0 25px rgba(184, 242, 60, 0.35);
+}
+
+/* --- NIGHT MODE: True Midnight Obsidian DARK MODE --- */
+:root[data-time-mode="night"] {
+  --plum: #0b0416;
+  --plum-deep: #05010b;
+  --plum-soft: #18092e;
+  --cream: #f4efff;
+  --line-dark: rgba(244, 239, 255, 0.13);
+  --line-light: rgba(244, 239, 255, 0.13);
+  --glow-lime: 0 0 54px rgba(184, 242, 60, 0.5);
+  --glow-lilac: 0 0 54px rgba(169, 139, 255, 0.5);
+  --shadow: 0 22px 60px rgba(0, 0, 0, 0.75);
+}
+
+[data-time-mode="night"] body {
+  background: #0b0416 !important;
+  color: #f4efff !important;
+}
+
+[data-time-mode="night"] .hero {
+  background: radial-gradient(120% 90% at 12% 8%, rgba(169, 139, 255, 0.2), transparent 55%),
+              radial-gradient(90% 70% at 85% 25%, rgba(184, 242, 60, 0.12), transparent 60%),
+              radial-gradient(60% 60% at 50% 50%, rgba(95, 42, 190, 0.15), transparent 70%);
+}
+
+[data-time-mode="night"] .glow-cursor {
+  background: radial-gradient(circle, rgba(169, 139, 255, 0.26), rgba(184, 242, 60, 0.14) 46%, transparent 72%);
+}
+
+/* Invert all Light Sections to Dark Mode in Night */
+[data-time-mode="night"] .section-light,
+[data-time-mode="night"] .section-light.on-light {
+  background: #0e051d !important;
+  color: #f4efff !important;
+  border-top: 1px solid rgba(244, 239, 255, 0.08);
+  border-bottom: 1px solid rgba(244, 239, 255, 0.08);
+}
+
+[data-time-mode="night"] .section-light .sec-lead {
+  color: rgba(244, 239, 255, 0.78) !important;
+}
+
+[data-time-mode="night"] .section-light .eyebrow {
+  color: var(--lime) !important;
+}
+
+[data-time-mode="night"] .section-light .micro {
+  color: rgba(244, 239, 255, 0.6) !important;
+}
+
+[data-time-mode="night"] .section-light h1,
+[data-time-mode="night"] .section-light h2,
+[data-time-mode="night"] .section-light h3,
+[data-time-mode="night"] .section-light h4 {
+  color: #ffffff !important;
+}
+
+/* Dark Mode Cards in Formats section */
+[data-time-mode="night"] .glass-card {
+  background: linear-gradient(150deg, rgba(30, 12, 54, 0.85), rgba(15, 6, 30, 0.95)) !important;
+  border-color: rgba(169, 139, 255, 0.22) !important;
+  color: #f4efff !important;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.45) !important;
+}
+
+[data-time-mode="night"] .glass-card h3 {
+  color: #ffffff !important;
+}
+
+[data-time-mode="night"] .glass-card p {
+  color: rgba(244, 239, 255, 0.78) !important;
+}
+
+[data-time-mode="night"] .glass-card:hover {
+  border-color: var(--lime) !important;
+  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.65), 0 0 24px rgba(184, 242, 60, 0.2) !important;
+}
+
+/* Coding Foundations tile cards in Dark Mode */
+[data-time-mode="night"] .tile-card {
+  background: linear-gradient(150deg, #1c0b34, #0f0520) !important;
+  border-color: rgba(169, 139, 255, 0.22) !important;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* FAQ Accordion in Dark Mode */
+[data-time-mode="night"] .acc {
+  background: rgba(24, 9, 44, 0.7) !important;
+  border-color: rgba(169, 139, 255, 0.18) !important;
+}
+
+[data-time-mode="night"] .acc.is-open {
+  border-color: var(--lime) !important;
+  background: rgba(35, 14, 64, 0.85) !important;
+}
+
+[data-time-mode="night"] .acc-btn {
+  color: #ffffff !important;
+}
+
+[data-time-mode="night"] .acc-ico {
+  background: rgba(184, 242, 60, 0.16) !important;
+}
+
+[data-time-mode="night"] .acc-ico::before,
+[data-time-mode="night"] .acc-ico::after {
+  background: var(--lime) !important;
+}
+
+[data-time-mode="night"] .acc-panel {
+  color: rgba(244, 239, 255, 0.8) !important;
+}
+
+/* For Parents section in Dark Mode */
+[data-time-mode="night"] .parent-points li {
+  color: rgba(244, 239, 255, 0.88) !important;
+}
+
+[data-time-mode="night"] .parent-points li::before {
+  background: #180932 !important;
+  box-shadow: inset 0 0 0 3.5px var(--lime) !important;
+}
+
+[data-time-mode="night"] .shield-svg path {
+  fill: #190a33 !important;
+  stroke: var(--lime) !important;
+  stroke-width: 1.5px !important;
+}
+
+/* Coverflow card back (face) in Dark Mode */
+[data-time-mode="night"] .cf-face {
+  background: #140626 !important;
+  color: #f4efff !important;
+  border: 1px solid rgba(169, 139, 255, 0.28) !important;
+}
+
+[data-time-mode="night"] .cf-desc {
+  color: rgba(244, 239, 255, 0.8) !important;
+}
+
+/* Buttons and words in light sections during Dark Mode */
+[data-time-mode="night"] .on-light .btn-ghost,
+[data-time-mode="night"] .btn-ghost.on-light {
+  border-color: rgba(244, 239, 255, 0.35) !important;
+  color: #f4efff !important;
+}
+
+[data-time-mode="night"] .on-light .btn-ghost:hover,
+[data-time-mode="night"] .btn-ghost.on-light:hover {
+  border-color: var(--lime) !important;
+  color: var(--lime) !important;
+  background: rgba(184, 242, 60, 0.08) !important;
+}
+
+[data-time-mode="night"] .on-light .w-seed {
+  color: #f4efff !important;
+}
+
+[data-time-mode="night"] .on-light .w-ai {
+  color: var(--lime) !important;
+}
+
+/* Dark Mode Components */
+[data-time-mode="night"] .navbar.is-scrolled {
+  background: rgba(11, 4, 22, 0.88) !important;
+}
+
+[data-time-mode="night"] .footer {
+  background: #05010b !important;
+}
+
+[data-time-mode="night"] .cta-card {
+  background: linear-gradient(140deg, #1c0a34, #0b0316 65%) !important;
+  border-color: rgba(169, 139, 255, 0.22) !important;
+}
+
+[data-time-mode="night"] .chat {
+  background: rgba(15, 6, 30, 0.9) !important;
+}
+
+[data-time-mode="night"] .ladder-panel {
+  background: rgba(15, 6, 30, 0.92) !important;
+}
+
+[data-time-mode="night"] .workshop-form {
+  background: rgba(15, 6, 30, 0.9) !important;
+}
+
+
+/* 30. TIME MODE SWITCHER COMPONENT ------------------------------------- */
+.time-switcher-wrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.time-switcher-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.46rem 0.85rem;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--line-dark);
+  background: rgba(255, 248, 231, 0.06);
+  color: var(--cream);
+  font-size: 0.86rem;
+  font-weight: 500;
+  transition: border-color 0.25s, background 0.25s, box-shadow 0.25s;
+}
+
+.time-switcher-btn:hover,
+.time-switcher-btn.is-active {
+  border-color: var(--lime);
+  background: rgba(255, 248, 231, 0.12);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.ts-icon {
+  font-size: 1.05rem;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+}
+
+.ts-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.ts-name {
+  line-height: 1;
+}
+
+.ts-auto-pill {
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.15rem 0.4rem;
+  border-radius: var(--radius-pill);
+  background: rgba(184, 242, 60, 0.2);
+  color: var(--lime);
+}
+
+.ts-arrow {
+  opacity: 0.7;
+  transition: transform 0.2s ease;
+}
+
+.time-switcher-btn.is-active .ts-arrow {
+  transform: rotate(180deg);
+}
+
+.time-switcher-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 250px;
+  background: var(--plum-deep);
+  border: 1px solid var(--line-dark);
+  border-radius: 18px;
+  padding: 0.5rem;
+  box-shadow: 0 16px 40px rgba(10, 4, 24, 0.65);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  animation: tsMenuIn 0.2s var(--ease-out);
+}
+
+@keyframes tsMenuIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.ts-menu-header {
+  padding: 0.5rem 0.75rem 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--lilac);
+  border-bottom: 1px solid var(--line-dark);
+  margin-bottom: 0.25rem;
+}
+
+.ts-option {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  border-radius: 12px;
+  text-align: left;
+  transition: background 0.18s, color 0.18s;
+  color: var(--cream);
+}
+
+.ts-option:hover {
+  background: rgba(255, 248, 231, 0.08);
+}
+
+.ts-option.is-selected {
+  background: rgba(184, 242, 60, 0.14);
+}
+
+.ts-opt-icon {
+  font-size: 1.25rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.ts-opt-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  flex-grow: 1;
+}
+
+.ts-opt-title {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.ts-badge-live {
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.1rem 0.38rem;
+  border-radius: var(--radius-pill);
+  background: var(--lime);
+  color: var(--plum);
+}
+
+.ts-opt-desc {
+  font-size: 0.74rem;
+  color: rgba(255, 248, 231, 0.62);
+}
+
+.ts-opt-check {
+  color: var(--lime);
+  flex-shrink: 0;
+}
+
+/* Dynamic Hero Pill Badge */
+.hero-pill-mode {
+  transition: all 0.4s var(--ease-out);
+}
+.hero-pill-mode .pill-mode-tag {
+  color: var(--lime);
+  font-weight: 600;
+  margin-right: 0.25rem;
+}
+
+.nav-ts-mobile {
+  display: inline-flex;
+  margin-left: auto;
+  margin-right: 0.4rem;
+}
+@media (min-width: 900px) {
+  .nav-ts-mobile {
+    display: none !important;
+  }
+}
+
+.mm-ts {
+  width: 100%;
+}
+.mm-ts .time-switcher-btn {
+  width: 100%;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+}
+.mm-ts .time-switcher-menu {
+  position: static;
+  width: 100%;
+  margin-top: 0.5rem;
+}

@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { goToSection } from '@/lib/ticker';
+import TimeModeSwitcher from '@/components/TimeModeSwitcher';
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -107,6 +108,7 @@ export default function Navbar() {
           </nav>
 
           <div className="nav-cta">
+            <TimeModeSwitcher />
             <Link className="btn btn-ghost" href="/login">
               Login
             </Link>
@@ -114,6 +116,8 @@ export default function Navbar() {
               Register
             </Link>
           </div>
+
+          <TimeModeSwitcher compact={true} className="nav-ts-mobile" />
 
           <button
             className="nav-toggle"
@@ -169,6 +173,9 @@ export default function Navbar() {
               <span>05</span>FAQ
             </a>
           </nav>
+          <div className="mm-ts-box" style={{ margin: '1rem 0 0.5rem' }}>
+            <TimeModeSwitcher className="mm-ts" />
+          </div>
           <div className="mm-cta">
             <Link className="btn btn-ghost" href="/login" onClick={closeMobileMenu}>
               Login

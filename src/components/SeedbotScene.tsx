@@ -5,6 +5,7 @@ import * as THREE from 'three';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { TICKER, lerp, clampNum, isTouch, motionOff, debounce, goToSection } from '@/lib/ticker';
+import { useTimeMode, TimeMode } from '@/lib/time-mode';
 
 const COL = {
   plum: 0x2a1450,
@@ -22,15 +23,75 @@ const PLANETS = [
   { level: '103', name: 'Generative AI 103', meta: 'AI agents and vibe coding | 10 to 12 weeks', color: COL.coral, a: (Math.PI * 4) / 3 },
 ];
 
-const LINES = [
-  "Let's build something!",
-  'Ready for a mission?',
-  'Ask me anything about AI!',
-  'I can help you build this.',
-  'Pick a planet and start learning!',
-];
+const TIME_LINES: Record<TimeMode, string[]> = {
+  morning: [
+    "Good morning! Ready to build?",
+    "Rise and shine, builder! Let's explore AI.",
+    "Early bird vibes! Let's code something new.",
+    "Pick a planet to start today's learning!",
+    "Ask me anything about AI!",
+  ],
+  afternoon: [
+    "Good afternoon! What are we creating?",
+    "High-energy coding session ahead!",
+    "Powering through the day with AI!",
+    "Ready for a mission? Pick a planet!",
+    "Let's build something awesome!",
+  ],
+  night: [
+    "Night owl mode activated!",
+    "Cosmic vibes tonight. The future never sleeps!",
+    "Late night vibe coding with AI!",
+    "Stargazing and learning generative AI.",
+    "Ready for a late-night mission?",
+  ],
+};
+
+const MODE_LIGHTS = {
+  morning: {
+    hemiSky: 0xffedd0,
+    hemiGround: 0x251346,
+    hemiIntensity: 0.95,
+    keyColor: 0xffb84d,
+    keyIntensity: 1.35,
+    rimColor: 0xe099ff,
+    rimIntensity: 0.95,
+    fillColor: 0xff9922,
+    fillIntensity: 0.65,
+    fogColor: 0x251346,
+  },
+  afternoon: {
+    hemiSky: 0xfff8e7,
+    hemiGround: 0x180a31,
+    hemiIntensity: 0.88,
+    keyColor: 0xb8f23c,
+    keyIntensity: 1.25,
+    rimColor: 0xa98bff,
+    rimIntensity: 1.05,
+    fillColor: 0xb8f23c,
+    fillIntensity: 0.65,
+    fogColor: 0x2a1450,
+  },
+  night: {
+    hemiSky: 0x7c5eff,
+    hemiGround: 0x05010b,
+    hemiIntensity: 0.65,
+    keyColor: 0xb8f23c,
+    keyIntensity: 1.4,
+    rimColor: 0x9a44ff,
+    rimIntensity: 1.55,
+    fillColor: 0x3d0d6e,
+    fillIntensity: 0.85,
+    fogColor: 0x0b0416,
+  },
+};
 
 export default function SeedbotScene({ onOpenCourseLevel }: { onOpenCourseLevel?: (level: string) => void }) {
+  const { activeMode } = useTimeMode();
+  const activeModeRef = useRef<TimeMode>(activeMode);
+  activeModeRef.current = activeMode;
+  const updateLightsRef = useRef<((mode: TimeMode, immediate?: boolean) => void) | null>(null);
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const bubbleRef = useRef<HTMLDivElement>(null);
   const tipRef = useRef<HTMLDivElement>(null);
@@ -39,6 +100,12 @@ export default function SeedbotScene({ onOpenCourseLevel }: { onOpenCourseLevel?
   const fallbackRef = useRef<HTMLDivElement>(null);
 
   const [fallbackActive, setFallbackActive] = useState(false);
+
+  useEffect(() => {
+    if (updateLightsRef.current) {
+      updateLightsRef.current(activeMode, false);
+    }
+  }, [activeMode]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -60,6 +127,10 @@ export default function SeedbotScene({ onOpenCourseLevel }: { onOpenCourseLevel?
     let armR: THREE.Group | null = null;
     let planetsGroup: THREE.Group | null = null;
     let hitBox: THREE.Mesh | null = null;
+    let hemiLight: THREE.HemisphereLight | null = null;
+    let keyLight: THREE.DirectionalLight | null = null;
+    let rimLight: THREE.DirectionalLight | null = null;
+    let fillLight: THREE.PointLight | null = null;
 
     const eyeballs: THREE.Mesh[] = [];
     const planets: Array<{
@@ -166,9 +237,10 @@ export default function SeedbotScene({ onOpenCourseLevel }: { onOpenCourseLevel?
       spinT = 0;
       pulse = 1;
       sparkBurst();
-      let msg = LINES[Math.floor(Math.random() * LINES.length)];
-      if (LINES.length > 1 && msg === lastBubbleMsg) {
-        msg = LINES[(LINES.indexOf(msg) + 1) % LINES.length];
+      const currentLines = TIME_LINES[activeModeRef.current] || TIME_LINES.morning;
+      let msg = currentLines[Math.floor(Math.random() * currentLines.length)];
+      if (currentLines.length > 1 && msg === lastBubbleMsg) {
+        msg = currentLines[(currentLines.indexOf(msg) + 1) % currentLines.length];
       }
       lastBubbleMsg = msg;
       showBubble(msg);
@@ -371,17 +443,75 @@ export default function SeedbotScene({ onOpenCourseLevel }: { onOpenCourseLevel?
     }
 
     function buildLights() {
-      scene!.add(new THREE.HemisphereLight(COL.cream, COL.deep, 0.85));
-      const key = new THREE.DirectionalLight(COL.lime, 1.15);
-      key.position.set(5, 6.5, 6);
-      scene!.add(key);
-      const rim = new THREE.DirectionalLight(COL.lilac, 0.95);
-      rim.position.set(-6, 2.5, -5.5);
-      scene!.add(rim);
-      const fill = new THREE.PointLight(COL.lime, 0.6, 20);
-      fill.position.set(0, -2.5, 4);
-      scene!.add(fill);
+      hemiLight = new THREE.HemisphereLight(COL.cream, COL.deep, 0.85);
+      scene!.add(hemiLight);
+
+      keyLight = new THREE.DirectionalLight(COL.lime, 1.15);
+      keyLight.position.set(5, 6.5, 6);
+      scene!.add(keyLight);
+
+      rimLight = new THREE.DirectionalLight(COL.lilac, 0.95);
+      rimLight.position.set(-6, 2.5, -5.5);
+      scene!.add(rimLight);
+
+      fillLight = new THREE.PointLight(COL.lime, 0.6, 20);
+      fillLight.position.set(0, -2.5, 4);
+      scene!.add(fillLight);
     }
+
+    function applyTimeMode(mode: TimeMode, immediate = false) {
+      const conf = MODE_LIGHTS[mode];
+      if (!conf || !scene || !hemiLight || !keyLight || !rimLight || !fillLight) return;
+      const dur = immediate ? 0 : 0.8;
+
+      gsap.to(hemiLight.color, {
+        r: ((conf.hemiSky >> 16) & 255) / 255,
+        g: ((conf.hemiSky >> 8) & 255) / 255,
+        b: (conf.hemiSky & 255) / 255,
+        duration: dur,
+      });
+      gsap.to(hemiLight.groundColor, {
+        r: ((conf.hemiGround >> 16) & 255) / 255,
+        g: ((conf.hemiGround >> 8) & 255) / 255,
+        b: (conf.hemiGround & 255) / 255,
+        duration: dur,
+      });
+      gsap.to(hemiLight, { intensity: conf.hemiIntensity, duration: dur });
+
+      gsap.to(keyLight.color, {
+        r: ((conf.keyColor >> 16) & 255) / 255,
+        g: ((conf.keyColor >> 8) & 255) / 255,
+        b: (conf.keyColor & 255) / 255,
+        duration: dur,
+      });
+      gsap.to(keyLight, { intensity: conf.keyIntensity, duration: dur });
+
+      gsap.to(rimLight.color, {
+        r: ((conf.rimColor >> 16) & 255) / 255,
+        g: ((conf.rimColor >> 8) & 255) / 255,
+        b: (conf.rimColor & 255) / 255,
+        duration: dur,
+      });
+      gsap.to(rimLight, { intensity: conf.rimIntensity, duration: dur });
+
+      gsap.to(fillLight.color, {
+        r: ((conf.fillColor >> 16) & 255) / 255,
+        g: ((conf.fillColor >> 8) & 255) / 255,
+        b: (conf.fillColor & 255) / 255,
+        duration: dur,
+      });
+      gsap.to(fillLight, { intensity: conf.fillIntensity, duration: dur });
+
+      if (scene.fog && 'color' in scene.fog) {
+        gsap.to(scene.fog.color, {
+          r: ((conf.fogColor >> 16) & 255) / 255,
+          g: ((conf.fogColor >> 8) & 255) / 255,
+          b: (conf.fogColor & 255) / 255,
+          duration: dur,
+        });
+      }
+    }
+    updateLightsRef.current = applyTimeMode;
 
     function updatePointer(clientX: number, clientY: number) {
       ptr.x = clientX;
@@ -629,6 +759,7 @@ export default function SeedbotScene({ onOpenCourseLevel }: { onOpenCourseLevel?
       camera.lookAt(0, 0.25, 0);
 
       buildLights();
+      applyTimeMode(activeModeRef.current, true);
       buildSeedbot();
       buildPlanets();
       buildParticles();
@@ -692,6 +823,7 @@ export default function SeedbotScene({ onOpenCourseLevel }: { onOpenCourseLevel?
       document.removeEventListener('visibilitychange', handleVisibility);
       if (scrollTriggerInst) scrollTriggerInst.kill();
       clearTimeout(bubbleTimeout);
+      updateLightsRef.current = null;
       TICKER.remove(step);
 
       if (scene) {

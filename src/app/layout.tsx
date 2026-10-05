@@ -9,6 +9,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import WhatsAppFab from "@/components/WhatsAppFab";
 import { ModalProvider } from "@/components/Modals";
+import { TimeModeProvider } from "@/lib/time-mode";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -17,6 +18,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://seedaiacademy.com"),
   title: "Seed AI Academy | Learn AI. Build with AI. Grow with AI.",
   description:
     "Seed AI Academy teaches coding and AI to children (6+), teenagers and adults through project-based courses. Learn AI. Build with AI. Grow with AI.",
@@ -56,7 +58,18 @@ export default function RootLayout({
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: 'document.documentElement.className += " js";',
+            __html: `(function(){
+              document.documentElement.className += " js";
+              try {
+                var s = localStorage.getItem('seedai_time_mode_setting');
+                var m = s;
+                if (!s || s === 'auto') {
+                  var h = new Date().getHours();
+                  m = (h >= 5 && h < 12) ? 'morning' : (h >= 12 && h < 18) ? 'afternoon' : 'night';
+                }
+                document.documentElement.setAttribute('data-time-mode', m);
+              } catch(e){}
+            })();`,
           }}
         />
       </head>
@@ -65,15 +78,17 @@ export default function RootLayout({
           Skip to content
         </a>
         <div className="grain" aria-hidden="true" />
-        <GlowCursor />
-        <SvgSprite />
-        <Preloader />
-        <ModalProvider>
-          <Navbar />
-          <main id="main">{children}</main>
-          <Footer />
-          <WhatsAppFab />
-        </ModalProvider>
+        <TimeModeProvider>
+          <GlowCursor />
+          <SvgSprite />
+          <Preloader />
+          <ModalProvider>
+            <Navbar />
+            <main id="main">{children}</main>
+            <Footer />
+            <WhatsAppFab />
+          </ModalProvider>
+        </TimeModeProvider>
       </body>
     </html>
   );

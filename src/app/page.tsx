@@ -10,8 +10,10 @@ import SeedbotChat from '@/components/SeedbotChat';
 import WorkshopForm from '@/components/WorkshopForm';
 import FaqAccordion from '@/components/FaqAccordion';
 import { motionOff, clampNum, goToSection } from '@/lib/ticker';
+import { useTimeMode } from '@/lib/time-mode';
 
 export default function HomePage() {
+  const { activeMode } = useTimeMode();
   const [selectedCourseLevel, setSelectedCourseLevel] = useState<string | null>(null);
 
   // Reveals, Counters, and How Path Line animation
@@ -108,9 +110,23 @@ export default function HomePage() {
         <section className="hero" id="top" data-scene="hero">
           <div className="section-inner hero-inner">
             <div className="hero-copy">
-              <p className="pill">
+              <p className="pill hero-pill-mode">
                 <span className="pill-dot" aria-hidden="true" />
-                Coding and AI for ages 6 to adults
+                {activeMode === 'morning' && (
+                  <>
+                    <span className="pill-mode-tag">🌅 Morning Edition:</span> Coding & AI for ages 6 to adults
+                  </>
+                )}
+                {activeMode === 'afternoon' && (
+                  <>
+                    <span className="pill-mode-tag">☀️ Afternoon Edition:</span> Coding & AI for ages 6 to adults
+                  </>
+                )}
+                {activeMode === 'night' && (
+                  <>
+                    <span className="pill-mode-tag">🌙 Night Owl Edition:</span> Coding & AI for ages 6 to adults
+                  </>
+                )}
               </p>
               <h1>
                 Learn AI. Build with AI. <span className="hl">Grow with AI.</span>
