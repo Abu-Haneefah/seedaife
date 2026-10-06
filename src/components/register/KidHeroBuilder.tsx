@@ -428,7 +428,7 @@ export default function KidHeroBuilder({ parentId, parentEmail, onFinishAll }: K
           <div className="kw-step-card reveal is-in">
             <p className="kw-step-badge">Step 1 of 5</p>
             <h2 className="kw-title">Pick Your Hero</h2>
-            <p className="kw-sub">Meet Seed AI's original heroes. Swipe or tap to choose!</p>
+            <p className="kw-sub">Meet Seed AI&apos;s original heroes. Swipe or tap to choose!</p>
 
             <div className="kw-hero-carousel">
               <button

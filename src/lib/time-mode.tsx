@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useEffect, useState, useMemo } from 'react';
+import React, { createContext, useContext, useEffect, useState, useMemo, useCallback } from 'react';
 
 export type TimeMode = 'morning' | 'afternoon' | 'night';
 export type TimeSetting = 'auto' | TimeMode;
@@ -60,20 +60,20 @@ export function TimeModeProvider({ children }: { children: React.ReactNode }) {
     }
   }, [activeMode]);
 
-  const setSetting = (newSetting: TimeSetting) => {
+  const setSetting = useCallback((newSetting: TimeSetting) => {
     setSettingState(newSetting);
     try {
       localStorage.setItem(STORAGE_KEY, newSetting);
     } catch {
       // storage unavailable
     }
-  };
+  }, []);
 
-  const cycleNext = () => {
+  const cycleNext = useCallback(() => {
     const order: TimeSetting[] = ['auto', 'morning', 'afternoon', 'night'];
     const nextIdx = (order.indexOf(setting) + 1) % order.length;
     setSetting(order[nextIdx]);
-  };
+  }, [setting, setSetting]);
 
   const value = useMemo(
     () => ({
@@ -83,7 +83,7 @@ export function TimeModeProvider({ children }: { children: React.ReactNode }) {
       cycleNext,
       systemMode,
     }),
-    [activeMode, setting, systemMode]
+    [activeMode, setting, setSetting, cycleNext, systemMode]
   );
 
   return <TimeModeContext.Provider value={value}>{children}</TimeModeContext.Provider>;

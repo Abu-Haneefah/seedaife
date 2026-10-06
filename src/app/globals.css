@@ -1058,7 +1058,13 @@ body,
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+}
+/* Center each registration view vertically when it fits, but start at the
+   top (instead of clipping the top out of reach) when content is taller
+   than the viewport, e.g. long forms on small phones. */
+.register-main > * {
+  margin-block: auto;
 }
 
 /* --- Registration Entry Screen --- */
@@ -1070,6 +1076,7 @@ body,
 
 .reg-entry-guide {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
   gap: 1.1rem;
@@ -1118,7 +1125,7 @@ body,
 
 .reg-cards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
   gap: 1.4rem;
   perspective: 1200px;
 }
@@ -1218,8 +1225,10 @@ body,
 
 .reg-header {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
+  gap: 0.5rem 0.75rem;
   margin-bottom: 1.4rem;
 }
 
@@ -1258,47 +1267,7 @@ body,
   margin-bottom: 1.8rem;
 }
 
-.btn-oauth-google {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.8rem;
-  width: 100%;
-  padding: 0.88rem 1.4rem;
-  border-radius: var(--radius-pill);
-  border: 1.5px solid rgba(255, 248, 231, 0.25);
-  background: rgba(255, 248, 231, 0.08);
-  color: var(--cream);
-  font-weight: 600;
-  font-size: 0.96rem;
-  cursor: pointer;
-  transition: background 0.25s, border-color 0.25s, transform 0.2s;
-}
-
-.btn-oauth-google:hover:not(:disabled) {
-  background: rgba(255, 248, 231, 0.15);
-  border-color: var(--lime);
-  transform: translateY(-2px);
-}
-
-.reg-divider {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin: 1.6rem 0;
-  color: rgba(255, 248, 231, 0.45);
-  font-size: 0.82rem;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-}
-
-.reg-divider::before,
-.reg-divider::after {
-  content: "";
-  flex: 1;
-  height: 1px;
-  background: var(--line-dark);
-}
+/* (Google OAuth button + divider styles removed — email/password only) */
 
 .reg-err-banner {
   padding: 0.75rem 1rem;
@@ -1463,13 +1432,13 @@ body,
 .otp-boxes {
   display: flex;
   justify-content: center;
-  gap: 0.65rem;
+  gap: clamp(0.35rem, 1.6vw, 0.65rem);
   margin-bottom: 1.8rem;
 }
 
 .otp-box {
-  width: clamp(40px, 11vw, 54px);
-  height: clamp(50px, 14vw, 64px);
+  width: clamp(34px, 10vw, 54px);
+  height: clamp(46px, 13vw, 64px);
   border-radius: 14px;
   border: 1.5px solid var(--line-dark);
   background: rgba(255, 248, 231, 0.08);
@@ -1525,6 +1494,22 @@ body,
 }
 .otp-back-link:hover {
   color: var(--cream);
+}
+
+/* Small-phone tweaks: keep all 6 OTP boxes on one row without overflow */
+@media (max-width: 480px) {
+  .otp-card {
+    padding: 1.6rem 1.1rem;
+  }
+}
+
+/* Prevent iOS Safari auto-zoom when focusing form fields (<16px font) */
+@media (max-width: 700px) {
+  .field input,
+  .field select,
+  select {
+    font-size: 16px;
+  }
 }
 
 /* --- Kid Hero Builder World --- */

@@ -153,7 +153,7 @@ export default function OtpVerification({
 
       <div className="otp-footer">
         <p className="otp-resend-text">
-          Didn't get the code?{' '}
+          Didn&apos;t get the code?{' '}
           {resendTimer > 0 ? (
             <span className="otp-timer">Resend in {resendTimer}s</span>
           ) : (
