@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import CustomSelect from '@/components/ui/CustomSelect';
 
 export default function WorkshopForm() {
   const [name, setName] = useState('');
@@ -128,23 +129,22 @@ export default function WorkshopForm() {
 
               <div className={`field${errors.role ? ' has-error' : ''}`}>
                 <label htmlFor="wsRole">I am a</label>
-                <select
+                <CustomSelect
                   id="wsRole"
                   name="audience"
-                  required
-                  aria-describedby="wsRoleErr"
                   value={role}
-                  onChange={(e) => {
-                    setRole(e.target.value);
+                  placeholder="Choose one"
+                  onChange={(val) => {
+                    setRole(val);
                     if (errors.role) setErrors((prev) => ({ ...prev, role: '' }));
                   }}
-                >
-                  <option value="">Choose one</option>
-                  <option value="parent">Parent</option>
-                  <option value="teen">Teen</option>
-                  <option value="adult">Adult</option>
-                  <option value="teacher">Teacher or school</option>
-                </select>
+                  options={[
+                    { value: 'parent', label: 'Parent (for my child)', hint: 'Ages 6 to 12' },
+                    { value: 'teen', label: 'Teen (13 to 17)', hint: 'High school & builders' },
+                    { value: 'adult', label: 'Adult / Professional', hint: 'Career & vibe coding' },
+                    { value: 'teacher', label: 'Teacher or School', hint: 'Classrooms & groups' },
+                  ]}
+                />
                 {errors.role && (
                   <p className="field-err" id="wsRoleErr">
                     {errors.role}
@@ -155,21 +155,21 @@ export default function WorkshopForm() {
               {role === 'parent' && (
                 <div className={`field${errors.age ? ' has-error' : ''}`} id="wsAgeField">
                   <label htmlFor="wsAge">Child age band</label>
-                  <select
+                  <CustomSelect
                     id="wsAge"
                     name="child_age_band"
-                    aria-describedby="wsAgeErr"
                     value={age}
-                    onChange={(e) => {
-                      setAge(e.target.value);
+                    placeholder="Choose one"
+                    onChange={(val) => {
+                      setAge(val);
                       if (errors.age) setErrors((prev) => ({ ...prev, age: '' }));
                     }}
-                  >
-                    <option value="">Choose one</option>
-                    <option value="6-9">6 to 9</option>
-                    <option value="10-13">10 to 13</option>
-                    <option value="14-18">14 to 18</option>
-                  </select>
+                    options={[
+                      { value: '6-9', label: '6 to 9 years old', hint: 'Visual & playful' },
+                      { value: '10-13', label: '10 to 13 years old', hint: 'Creators & coders' },
+                      { value: '14-18', label: '14 to 18 years old', hint: 'Real portfolio skills' },
+                    ]}
+                  />
                   {errors.age && (
                     <p className="field-err" id="wsAgeErr">
                       {errors.age}

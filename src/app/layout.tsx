@@ -18,7 +18,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://seedaiacademy.com"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://seedaife.vercel.app"),
   title: "Seed AI Academy | Learn AI. Build with AI. Grow with AI.",
   description:
     "Seed AI Academy teaches coding and AI to children (6+), teenagers and adults through project-based courses. Learn AI. Build with AI. Grow with AI.",

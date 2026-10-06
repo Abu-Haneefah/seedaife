@@ -26,7 +26,7 @@ export const CONFIG: AppConfig = {
   INSTAGRAM_URL: getEnvVal(process.env.NEXT_PUBLIC_INSTAGRAM_URL, 'https://www.instagram.com/seedaiacademy/'),
   YOUTUBE_URL: getEnvVal(process.env.NEXT_PUBLIC_YOUTUBE_URL, 'https://www.youtube.com/channel/UCcVTAm_6sYBWbTMIBRf2akA'),
   LINKEDIN_URL: getEnvVal(process.env.NEXT_PUBLIC_LINKEDIN_URL, 'https://www.linkedin.com/in/fatai-jabar-9309a4279/'),
-  SITE_URL: getEnvVal(process.env.NEXT_PUBLIC_SITE_URL, ''),
+  SITE_URL: getEnvVal(process.env.NEXT_PUBLIC_SITE_URL, 'https://seedaife.vercel.app'),
 };
 
 export const isPlaceholder = (v: string | undefined): boolean => {
