@@ -349,9 +349,13 @@ export default function KidHeroBuilder({ parentId, parentEmail, onFinishAll }: K
       if (!error && data?.id) {
         learnerId = data.id;
         await setChildPin(learnerId, pinDigits);
+      } else {
+        // Cache fallback hero
+        await setChildPin(learnerId, pinDigits);
       }
     } else {
       // Local fallback
+      await setChildPin(learnerId, pinDigits);
       try {
         localStorage.setItem(`seedai_hero_${learnerId}`, JSON.stringify({
           heroName,
@@ -363,6 +367,23 @@ export default function KidHeroBuilder({ parentId, parentEmail, onFinishAll }: K
         }));
       } catch {}
     }
+
+    // Always update the local list of heroes for immediate Kid Mode PIN login
+    try {
+      const storedLearners = localStorage.getItem('seedai_demo_learners');
+      const list = storedLearners ? JSON.parse(storedLearners) : [];
+      list.unshift({
+        id: learnerId,
+        display_name: heroName.trim(),
+        age_band: ageBand,
+        avatar_key: currentHero.key,
+        xp: 100,
+        level: 1,
+        created_at: new Date().toISOString(),
+      });
+      localStorage.setItem('seedai_demo_learners', JSON.stringify(list));
+      localStorage.setItem(`seedai_pin_${learnerId}`, pinDigits);
+    } catch {}
 
     const newHero: CreatedHero = {
       id: learnerId,

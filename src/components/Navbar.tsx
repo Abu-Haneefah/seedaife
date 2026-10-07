@@ -72,6 +72,14 @@ export default function Navbar() {
     }
   };
 
+  // The dashboards render their own app header (DashboardHeader with brand,
+  // role pill and Sign Out), so hide the marketing navbar there. Without
+  // this, the fixed navbar (z-index 60) overlaps the sticky dashboard
+  // header (z-index 50) and covers the top of the dashboard content.
+  if (pathname.startsWith('/dashboard')) {
+    return null;
+  }
+
   return (
     <>
       <header className={`navbar${scrolled ? ' is-scrolled' : ''}`} id="navbar">
