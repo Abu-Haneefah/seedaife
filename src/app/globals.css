@@ -3761,7 +3761,8 @@ body,
 .ins-note.is-bad { color: var(--coral); }
 .pill-tag.is-empty { opacity: 0.7; }
 
-
+
+
 
 /* Admin data table (search, toolbar, pagination) */
 .adm-table-block { display: grid; gap: 1rem; }
@@ -6256,4 +6257,6 @@ body,
 [data-theme='kid'] .db-shell-v1 .card-v1,
 [data-theme='kid'] .db-shell-v1 .stat-card-v1 { border-radius: 24px; }
 [data-theme='kid'] .db-shell-v1 .btn-v1 { border-radius: 24px; }
+
+
 
