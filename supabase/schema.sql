@@ -538,15 +538,19 @@ ALTER TABLE public.audit_log ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.site_settings ENABLE ROW LEVEL SECURITY;
 
 -- 8.1 PROFILES POLICIES
+DROP POLICY IF EXISTS "Profiles: Super Admin full access" ON public.profiles;
 CREATE POLICY "Profiles: Super Admin full access" ON public.profiles
   FOR ALL TO authenticated USING (public.is_super_admin());
 
+DROP POLICY IF EXISTS "Profiles: Users read and update their own" ON public.profiles;
 CREATE POLICY "Profiles: Users read and update their own" ON public.profiles
   FOR SELECT TO authenticated USING (id = auth.uid());
 
+DROP POLICY IF EXISTS "Profiles: Users update own details" ON public.profiles;
 CREATE POLICY "Profiles: Users update own details" ON public.profiles
   FOR UPDATE TO authenticated USING (id = auth.uid()) WITH CHECK (id = auth.uid());
 
+DROP POLICY IF EXISTS "Profiles: Instructors can view names of parents and their learners" ON public.profiles;
 CREATE POLICY "Profiles: Instructors can view names of parents and their learners" ON public.profiles
   FOR SELECT TO authenticated USING (
     public.current_role_name() = 'instructor' AND (
@@ -561,15 +565,19 @@ CREATE POLICY "Profiles: Instructors can view names of parents and their learner
   );
 
 -- 8.2 LEARNERS POLICIES
+DROP POLICY IF EXISTS "Learners: Super Admin full access" ON public.learners;
 CREATE POLICY "Learners: Super Admin full access" ON public.learners
   FOR ALL TO authenticated USING (public.is_super_admin());
 
+DROP POLICY IF EXISTS "Learners: Parents manage their own children" ON public.learners;
 CREATE POLICY "Learners: Parents manage their own children" ON public.learners
   FOR ALL TO authenticated USING (parent_id = auth.uid());
 
+DROP POLICY IF EXISTS "Learners: Self-learners read and update their own profile" ON public.learners;
 CREATE POLICY "Learners: Self-learners read and update their own profile" ON public.learners
   FOR ALL TO authenticated USING (user_id = auth.uid());
 
+DROP POLICY IF EXISTS "Learners: Instructors read enrolled learners for their classes" ON public.learners;
 CREATE POLICY "Learners: Instructors read enrolled learners for their classes" ON public.learners
   FOR SELECT TO authenticated USING (
     id IN (
@@ -580,19 +588,24 @@ CREATE POLICY "Learners: Instructors read enrolled learners for their classes" O
   );
 
 -- 8.3 COURSES POLICIES
+DROP POLICY IF EXISTS "Courses: Public can read published courses" ON public.courses;
 CREATE POLICY "Courses: Public can read published courses" ON public.courses
   FOR SELECT TO anon, authenticated USING (is_published = true);
 
+DROP POLICY IF EXISTS "Courses: Super Admin full manage" ON public.courses;
 CREATE POLICY "Courses: Super Admin full manage" ON public.courses
   FOR ALL TO authenticated USING (public.is_super_admin());
 
 -- 8.4 CLASSES POLICIES
+DROP POLICY IF EXISTS "Classes: Super Admin full access" ON public.classes;
 CREATE POLICY "Classes: Super Admin full access" ON public.classes
   FOR ALL TO authenticated USING (public.is_super_admin());
 
+DROP POLICY IF EXISTS "Classes: Instructors manage their assigned classes" ON public.classes;
 CREATE POLICY "Classes: Instructors manage their assigned classes" ON public.classes
   FOR ALL TO authenticated USING (instructor_id = auth.uid());
 
+DROP POLICY IF EXISTS "Classes: Enrolled learners and parents view class details" ON public.classes;
 CREATE POLICY "Classes: Enrolled learners and parents view class details" ON public.classes
   FOR SELECT TO authenticated USING (
     id IN (
@@ -603,14 +616,17 @@ CREATE POLICY "Classes: Enrolled learners and parents view class details" ON pub
   );
 
 -- 8.5 ENROLLMENTS POLICIES
+DROP POLICY IF EXISTS "Enrollments: Super Admin full access" ON public.enrollments;
 CREATE POLICY "Enrollments: Super Admin full access" ON public.enrollments
   FOR ALL TO authenticated USING (public.is_super_admin());
 
+DROP POLICY IF EXISTS "Enrollments: Instructors view enrollments for their classes" ON public.enrollments;
 CREATE POLICY "Enrollments: Instructors view enrollments for their classes" ON public.enrollments
   FOR SELECT TO authenticated USING (
     class_id IN (SELECT id FROM public.classes WHERE instructor_id = auth.uid())
   );
 
+DROP POLICY IF EXISTS "Enrollments: Parents and learners view own enrollments" ON public.enrollments;
 CREATE POLICY "Enrollments: Parents and learners view own enrollments" ON public.enrollments
   FOR SELECT TO authenticated USING (
     learner_id IN (
@@ -620,28 +636,34 @@ CREATE POLICY "Enrollments: Parents and learners view own enrollments" ON public
   );
 
 -- 8.6 ATTENDANCE POLICIES
+DROP POLICY IF EXISTS "Attendance: Super Admin full access" ON public.attendance;
 CREATE POLICY "Attendance: Super Admin full access" ON public.attendance
   FOR ALL TO authenticated USING (public.is_super_admin());
 
+DROP POLICY IF EXISTS "Attendance: Instructors mark attendance for their classes" ON public.attendance;
 CREATE POLICY "Attendance: Instructors mark attendance for their classes" ON public.attendance
   FOR ALL TO authenticated USING (
     class_id IN (SELECT id FROM public.classes WHERE instructor_id = auth.uid())
   );
 
+DROP POLICY IF EXISTS "Attendance: Parents and learners view own records" ON public.attendance;
 CREATE POLICY "Attendance: Parents and learners view own records" ON public.attendance
   FOR SELECT TO authenticated USING (
     learner_id IN (SELECT id FROM public.learners WHERE user_id = auth.uid() OR parent_id = auth.uid())
   );
 
 -- 8.7 ASSIGNMENTS POLICIES
+DROP POLICY IF EXISTS "Assignments: Super Admin full access" ON public.assignments;
 CREATE POLICY "Assignments: Super Admin full access" ON public.assignments
   FOR ALL TO authenticated USING (public.is_super_admin());
 
+DROP POLICY IF EXISTS "Assignments: Instructors manage assignments for their classes" ON public.assignments;
 CREATE POLICY "Assignments: Instructors manage assignments for their classes" ON public.assignments
   FOR ALL TO authenticated USING (
     class_id IN (SELECT id FROM public.classes WHERE instructor_id = auth.uid())
   );
 
+DROP POLICY IF EXISTS "Assignments: Enrolled learners and parents view assignments" ON public.assignments;
 CREATE POLICY "Assignments: Enrolled learners and parents view assignments" ON public.assignments
   FOR SELECT TO authenticated USING (
     class_id IN (
@@ -652,9 +674,11 @@ CREATE POLICY "Assignments: Enrolled learners and parents view assignments" ON p
   );
 
 -- 8.8 SUBMISSIONS POLICIES
+DROP POLICY IF EXISTS "Submissions: Super Admin full access" ON public.submissions;
 CREATE POLICY "Submissions: Super Admin full access" ON public.submissions
   FOR ALL TO authenticated USING (public.is_super_admin());
 
+DROP POLICY IF EXISTS "Submissions: Instructors view and grade submissions for their classes" ON public.submissions;
 CREATE POLICY "Submissions: Instructors view and grade submissions for their classes" ON public.submissions
   FOR ALL TO authenticated USING (
     assignment_id IN (
@@ -664,20 +688,24 @@ CREATE POLICY "Submissions: Instructors view and grade submissions for their cla
     )
   );
 
+DROP POLICY IF EXISTS "Submissions: Learners and parents manage own submissions" ON public.submissions;
 CREATE POLICY "Submissions: Learners and parents manage own submissions" ON public.submissions
   FOR ALL TO authenticated USING (
     learner_id IN (SELECT id FROM public.learners WHERE user_id = auth.uid() OR parent_id = auth.uid())
   );
 
 -- 8.9 ANNOUNCEMENTS POLICIES
+DROP POLICY IF EXISTS "Announcements: Super Admin full access" ON public.announcements;
 CREATE POLICY "Announcements: Super Admin full access" ON public.announcements
   FOR ALL TO authenticated USING (public.is_super_admin());
 
+DROP POLICY IF EXISTS "Announcements: Instructors create class announcements" ON public.announcements;
 CREATE POLICY "Announcements: Instructors create class announcements" ON public.announcements
   FOR ALL TO authenticated USING (
     class_id IN (SELECT id FROM public.classes WHERE instructor_id = auth.uid())
   );
 
+DROP POLICY IF EXISTS "Announcements: View announcements matching audience" ON public.announcements;
 CREATE POLICY "Announcements: View announcements matching audience" ON public.announcements
   FOR SELECT TO anon, authenticated USING (
     audience = 'all'
@@ -693,39 +721,49 @@ CREATE POLICY "Announcements: View announcements matching audience" ON public.an
   );
 
 -- 8.10 MESSAGES POLICIES
+DROP POLICY IF EXISTS "Messages: Super Admin full access" ON public.messages;
 CREATE POLICY "Messages: Super Admin full access" ON public.messages
   FOR ALL TO authenticated USING (public.is_super_admin());
 
+DROP POLICY IF EXISTS "Messages: Sender and Recipient read and write" ON public.messages;
 CREATE POLICY "Messages: Sender and Recipient read and write" ON public.messages
   FOR ALL TO authenticated USING (
     sender_id = auth.uid() OR recipient_id = auth.uid()
   );
 
 -- 8.11 NOTIFICATIONS POLICIES
+DROP POLICY IF EXISTS "Notifications: Super Admin full access" ON public.notifications;
 CREATE POLICY "Notifications: Super Admin full access" ON public.notifications
   FOR ALL TO authenticated USING (public.is_super_admin());
 
+DROP POLICY IF EXISTS "Notifications: Users manage own notifications" ON public.notifications;
 CREATE POLICY "Notifications: Users manage own notifications" ON public.notifications
   FOR ALL TO authenticated USING (user_id = auth.uid());
 
 -- 8.12 LEADS POLICIES (Public landing page lead capture)
+DROP POLICY IF EXISTS "Leads: Public insert only" ON public.leads;
 CREATE POLICY "Leads: Public insert only" ON public.leads
   FOR INSERT TO anon, authenticated WITH CHECK (true);
 
+DROP POLICY IF EXISTS "Leads: Super Admin view leads" ON public.leads;
 CREATE POLICY "Leads: Super Admin view leads" ON public.leads
   FOR SELECT TO authenticated USING (public.is_super_admin());
 
 -- 8.13 AUDIT LOG POLICIES
+DROP POLICY IF EXISTS "Audit Log: Super Admin view all" ON public.audit_log;
 CREATE POLICY "Audit Log: Super Admin view all" ON public.audit_log
   FOR SELECT TO authenticated USING (public.is_super_admin());
 
+DROP POLICY IF EXISTS "Audit Log: Authenticated users insert events" ON public.audit_log;
 CREATE POLICY "Audit Log: Authenticated users insert events" ON public.audit_log
   FOR INSERT TO authenticated WITH CHECK (actor_id = auth.uid());
 
 -- 8.14 SITE SETTINGS POLICIES
+DROP POLICY IF EXISTS "Site Settings: Public read" ON public.site_settings;
 CREATE POLICY "Site Settings: Public read" ON public.site_settings
   FOR SELECT TO anon, authenticated USING (true);
 
+DROP POLICY IF EXISTS "Site Settings: Super Admin manage" ON public.site_settings;
 CREATE POLICY "Site Settings: Super Admin manage" ON public.site_settings
   FOR ALL TO authenticated USING (public.is_super_admin());
 
@@ -807,4 +845,149 @@ ON CONFLICT (key) DO NOTHING;
 -- UPDATE public.profiles
 -- SET role = 'super_admin'
 -- WHERE email = 'YOUR_EMAIL_HERE';
+
 -- ============================================================================
+-- STAGE 6: INSTRUCTOR DASHBOARD MIGRATION (safe to re-run)
+-- ============================================================================
+
+-- 6.1 Instructor profile availability (profile + availability section)
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS availability JSONB;
+
+-- 6.2 Class-audience announcements must notify enrolled learners and their parents.
+--      (7.3 already handles 'all', 'parents', 'learners' and 'instructors'.)
+CREATE OR REPLACE FUNCTION public.notify_announcement()
+RETURNS trigger
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  enrolled RECORD;
+BEGIN
+  IF new.audience = 'all' THEN
+    INSERT INTO public.notifications (user_id, type, title, body, link)
+    SELECT id, 'announcement', new.title, substring(new.body from 1 for 100), '/dashboard'
+    FROM public.profiles
+    WHERE is_active = true;
+  ELSIF new.audience = 'parents' THEN
+    INSERT INTO public.notifications (user_id, type, title, body, link)
+    SELECT id, 'announcement', new.title, substring(new.body from 1 for 100), '/dashboard/parent'
+    FROM public.profiles
+    WHERE role = 'parent' AND is_active = true;
+  ELSIF new.audience = 'learners' THEN
+    INSERT INTO public.notifications (user_id, type, title, body, link)
+    SELECT id, 'announcement', new.title, substring(new.body from 1 for 100), '/dashboard/learner'
+    FROM public.profiles
+    WHERE role = 'learner' AND is_active = true;
+  ELSIF new.audience = 'instructors' THEN
+    INSERT INTO public.notifications (user_id, type, title, body, link)
+    SELECT id, 'announcement', new.title, substring(new.body from 1 for 100), '/dashboard/instructor'
+    FROM public.profiles
+    WHERE role = 'instructor' AND is_active = true;
+  ELSIF new.audience = 'class' AND new.class_id IS NOT NULL THEN
+    FOR enrolled IN (
+      SELECT DISTINCT l.parent_id, l.user_id
+      FROM public.enrollments e
+      JOIN public.learners l ON l.id = e.learner_id
+      WHERE e.class_id = new.class_id AND e.status = 'active'
+    ) LOOP
+      IF enrolled.parent_id IS NOT NULL THEN
+        INSERT INTO public.notifications (user_id, type, title, body, link)
+        VALUES (enrolled.parent_id, 'announcement', new.title, substring(new.body from 1 for 100), '/dashboard/parent');
+      END IF;
+      IF enrolled.user_id IS NOT NULL THEN
+        INSERT INTO public.notifications (user_id, type, title, body, link)
+        VALUES (enrolled.user_id, 'announcement', new.title, substring(new.body from 1 for 100), '/dashboard/learner');
+      END IF;
+    END LOOP;
+  END IF;
+  RETURN new;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS trg_notify_announcement ON public.announcements;
+CREATE TRIGGER trg_notify_announcement
+  AFTER INSERT ON public.announcements
+  FOR EACH ROW EXECUTE FUNCTION public.notify_announcement();
+
+
+-- ============================================================================
+-- STAGE 6: INSTRUCTOR PROMOTION QUERY (MANUAL STEP)
+-- Run this query after creating an instructor account to grant it access to
+-- the Instructor dashboard:
+--
+-- UPDATE public.profiles
+-- SET role = 'instructor'
+-- WHERE email = 'INSTRUCTOR_EMAIL_HERE';
+-- ===========================================================================
+
+-- ============================================================================
+
+
+-- ============================================================================
+-- STAGE 7: SUPER ADMIN MIGRATION (safe to re-run)
+-- ============================================================================
+
+-- 7.1 Workshop lead status (new / contacted / converted / closed)
+ALTER TABLE public.leads ADD COLUMN IF NOT EXISTS status TEXT NOT NULL DEFAULT 'new';
+
+-- 7.2 Super admin must be able to update lead status (8.12 only grants INSERT + SELECT)
+DROP POLICY IF EXISTS "Leads: Super Admin update status" ON public.leads;
+CREATE POLICY "Leads: Super Admin update status" ON public.leads
+  FOR UPDATE TO authenticated USING (public.is_super_admin()) WITH CHECK (public.is_super_admin());
+
+-- 7.3 Assignment targets had RLS enabled but NO policies, so admin-created
+--      "assign to specific learners" rows were silently rejected.
+DROP POLICY IF EXISTS "Assignment Targets: Super Admin full access" ON public.assignment_targets;
+CREATE POLICY "Assignment Targets: Super Admin full access" ON public.assignment_targets
+  FOR ALL TO authenticated USING (public.is_super_admin()) WITH CHECK (public.is_super_admin());
+
+DROP POLICY IF EXISTS "Assignment Targets: Instructors manage own" ON public.assignment_targets;
+CREATE POLICY "Assignment Targets: Instructors manage own" ON public.assignment_targets
+  FOR ALL TO authenticated
+  USING (
+    EXISTS (
+      SELECT 1 FROM public.assignments a
+      WHERE a.id = assignment_id
+        AND a.created_by = auth.uid()
+    )
+  )
+  WITH CHECK (
+    EXISTS (
+      SELECT 1 FROM public.assignments a
+      WHERE a.id = assignment_id
+        AND a.created_by = auth.uid()
+    )
+  );
+
+-- 7.4 "Assign to specific learners/instructors" rows must be visible to those
+--      targets (8.7 only covers enrolled-class assignments).
+DROP POLICY IF EXISTS "Assignments: Targeted learners view assignments" ON public.assignments;
+CREATE POLICY "Assignments: Targeted learners view assignments" ON public.assignments
+  FOR SELECT TO authenticated USING (
+    id IN (
+      SELECT at.assignment_id FROM public.assignment_targets at
+      JOIN public.learners l ON l.id = at.learner_id
+      WHERE l.user_id = auth.uid() OR l.parent_id = auth.uid()
+    )
+  );
+
+DROP POLICY IF EXISTS "Assignments: Targeted instructors view assignments" ON public.assignments;
+CREATE POLICY "Assignments: Targeted instructors view assignments" ON public.assignments
+  FOR SELECT TO authenticated USING (
+    id IN (
+      SELECT assignment_id FROM public.assignment_targets
+      WHERE instructor_id = auth.uid()
+    )
+  );
+
+-- 7.5 Targeted instructors must also see submissions for their targeted
+--      assignments (8.8 only covers assignments attached to their classes).
+DROP POLICY IF EXISTS "Submissions: Targeted instructors view submissions" ON public.submissions;
+CREATE POLICY "Submissions: Targeted instructors view submissions" ON public.submissions
+  FOR SELECT TO authenticated USING (
+    assignment_id IN (
+      SELECT at.assignment_id FROM public.assignment_targets at
+      WHERE at.instructor_id = auth.uid()
+    )
+  );

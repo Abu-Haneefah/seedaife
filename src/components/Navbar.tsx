@@ -110,9 +110,6 @@ export default function Navbar() {
             <a href="#workshop" onClick={(e) => handleNavClick('workshop', e)}>
               Free workshop
             </a>
-            <a href="#faq" onClick={(e) => handleNavClick('faq', e)}>
-              FAQ
-            </a>
           </nav>
 
           <div className="nav-cta">

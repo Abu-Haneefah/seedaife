@@ -59,7 +59,7 @@ export default function FaqAccordion() {
           {FAQS.map((item) => {
             const isOpen = !!openMap[item.id];
             return (
-              <li key={item.id} className={`acc reveal${isOpen ? ' is-open' : ''}`}>
+              <li key={item.id} className={`acc reveal${isOpen ? ' is-open is-in' : ''}`}>
                 <h3 className="acc-h">
                   <button
                     className="acc-btn"

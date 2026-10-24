@@ -16,6 +16,8 @@ export interface Profile {
   consent_accepted_at?: string | null;
   is_active: boolean;
   created_at: string;
+  /** Stage 6: instructor availability (JSONB) */
+  availability?: unknown;
 }
 
 export interface Learner {
